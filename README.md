@@ -20,7 +20,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 author = "Chong Wu and Zhenan Feng and Jiangbin Zheng and Houwang Zhang and Jiawang Cao and Hong Yan",
 title = "{Star Topology Convolution for Graph Representation Learning}",
 year = "2020",
-month = "11",
+month = "8",
 url = "https://www.techrxiv.org/articles/preprint/Star_Topology_Convolution_for_Graph_Representation_Learning/12805799",
 doi = "10.36227/techrxiv.12805799.v3"
 }
