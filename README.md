@@ -1,5 +1,5 @@
 # Star_Topology_Convolution
-Here is a Pytorch implementation of Star Topology Convolution.
+This is a Pytorch implementation of Star Topology Convolution.
 
 Copyright (c) 2020, Chong WU & Zhenan FENG All rights reserved.
 
