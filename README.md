@@ -39,7 +39,7 @@ doi = "10.36227/techrxiv.12805799.v3"
 
 # Description:
 
-This Repository including the Pytorch implementation of Star Topology Convolution and six datasets: Ogbn-MAG, Ogbn-Arxiv, Citeseer, Cora, Pubmed, and protein used in our paper: Star Topology Convolution for Graph Representation Learning.
+This Repository including the Pytorch implementation of Star Topology Convolution and six datasets: Ogbn-MAG, Ogbn-Arxiv, Citeseer, Cora, Pubmed, and Protein used in our paper: Star Topology Convolution for Graph Representation Learning.
 
 Run Demo_test.py can reproduce the results of Cora, Citeseer, Pubmed, Protein, Ogbn-Arxiv, and Ogbn-MAG.
 
