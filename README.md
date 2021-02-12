@@ -37,6 +37,8 @@ This Repository including the Pytorch implementation of Star Topology Convolutio
 Run Demo_test.py can reproduce the results of Cora, Citeseer, Pubmed, Protein, Ogbn-Arxiv, and Ogbn-MAG.
 
 # Dependencies
+
 python >= 3.7.6
+
 pytorch >= 1.7.1
 
