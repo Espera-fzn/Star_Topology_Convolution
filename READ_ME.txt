@@ -40,5 +40,12 @@ Dependencies
 python >= 3.7.6
 pytorch >= 1.7.1
 
+___________________________________________
+STC format of OGB datasets
 
+The STC format of Ogbn-MAG and Ogbn-Arxiv can be downloaded on
+
+Url：https://pan.baidu.com/s/1G6QGVm7GROuVeXjqUVhxdg
+
+PIN：j9h9
 
