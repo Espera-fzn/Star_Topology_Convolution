@@ -34,7 +34,7 @@ Then, we used the processed links {"paper" "cites" "paper"} to construct the gra
 ___________________________________________
 STC (Pytorch implementation):
 
-Run Demo_test.py can reproduce the results of Cora, Citeseer, Pubmed, Protein, and Ogbn-Arxiv. Ogbn-MAG is too large to be included into the supplemental material.
+Run Demo_test.py can reproduce the results of Cora, Citeseer, Pubmed, Protein, Ogbn-Arxiv, and Ogbn-MAG.
 
 Dependencies
 python >= 3.7.6
