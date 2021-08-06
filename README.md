@@ -50,6 +50,7 @@ pytorch >= 1.8.1
 
 The STC format of Ogbn-MAG and Ogbn-Arxiv can be downloaded on 
 
-Url：https://pan.baidu.com/s/1G6QGVm7GROuVeXjqUVhxdg 
+Url：https://pan.baidu.com/s/1oOUp067hOmPvwD7KZ_-Lww
 
-PIN：j9h9 
+PIN：e95g
+
