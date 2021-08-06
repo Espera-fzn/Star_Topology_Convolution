@@ -19,33 +19,18 @@
 # =============================================================================
 # =============================================================================
 # Please cite our paper if you use this code in your own work:
-# Wu, Chong; Feng, Zhenan; Zheng, Jiangbin; Zhang, Houwang; Cao, Jiawang; Yan, Hong (2020): Star Topology Convolution for Graph Representation Learning. TechRxiv. Preprint. https://doi.org/10.36227/techrxiv.12805799.v3
+# Wu, Chong; Feng, Zhenan; Zheng, Jiangbin; Zhang, Houwang; Cao, Jiawang; YAN, Hong (2020): Star Topology Convolution for Graph Representation Learning. TechRxiv. Preprint. https://doi.org/10.36227/techrxiv.12805799.v4 
 # =============================================================================
 # =============================================================================
-
-___________________________________________
-Preprocessing for Ogbn-MAG
-
-Since Ogbn-MAG dataset is a heterogeneous network, we first used all three kinds of hidden links {'author','affiliated_with', 'institution'}, 
-{'author','writes', 'paper'}, and {'paper', 'has_topic', 'field_of_study'} to enrich the links of {'paper', 'cites', 'paper'}. 
-
-Then, we used the processed links {"paper" "cites" "paper"} to construct the graph and train the prediction model.
 
 ___________________________________________
 STC (Pytorch implementation):
 
-Run Demo_test.py can reproduce the results of Cora, Citeseer, Pubmed, Protein, Ogbn-Arxiv, and Ogbn-MAG.
+Run Demo_test.py can reproduce the results of Ogbn-MAG (homogeneous version, only use the information of {'paper', 'cites', 'paper'} without using any preprocessing steps).
 
 Dependencies
-python >= 3.7.6
-pytorch >= 1.7.1
+python >= 3.7.0
+pytorch >= 1.8.1
 
-___________________________________________
-STC format of OGB datasets
 
-The STC format of Ogbn-MAG and Ogbn-Arxiv can be downloaded on
-
-Url：https://pan.baidu.com/s/1G6QGVm7GROuVeXjqUVhxdg
-
-PIN：j9h9
 
