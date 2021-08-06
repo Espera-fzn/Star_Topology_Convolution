@@ -54,7 +54,7 @@ random.seed(1)
 embedding_dim1 = 256
 embedding_dim2 = 256
 
-save_dir = '/Users/aaa_white/Downloads/Star_Topology_Convolution-main-2/raw_mag/'
+save_dir = './raw_mag/'
 
 
 #############################################################################################
