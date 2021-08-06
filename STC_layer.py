@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 from torch.nn import init
 import random
 import numpy as np
@@ -27,10 +26,9 @@ import numpy as np
 # =============================================================================
 # =============================================================================
 # Please cite our paper if you use this code in your own work:
-# Wu, Chong; Feng, Zhenan; Zheng, Jiangbin; Zhang, Houwang; Cao, Jiawang; Yan, Hong (2020): Star Topology Convolution for Graph Representation Learning. TechRxiv. Preprint. https://doi.org/10.36227/techrxiv.12805799.v3
+# Wu, Chong; Feng, Zhenan; Zheng, Jiangbin; Zhang, Houwang; Cao, Jiawang; YAN, Hong (2020): Star Topology Convolution for Graph Representation Learning. TechRxiv. Preprint. https://doi.org/10.36227/techrxiv.12805799.v4 
 # =============================================================================
 # =============================================================================
-
 
 """
 Star Topology Convolution (STC) Layer.
@@ -52,7 +50,6 @@ class STC_layer(nn.Module):
 
         super(STC_layer, self).__init__()
 
-        self.batch_norm = torch.nn.BatchNorm1d(feature_dim)
         self.features = features
         self.filter_size = filter_size
         self.feature_dim = feature_dim
@@ -65,26 +62,19 @@ class STC_layer(nn.Module):
         I = np.diag(np.ones(filter_size))
         D[0,0] = (filter_size-1)**(-1/2)
         for i in range(filter_size-1):
-            # self.filter[0,i+1] = -ADJ[i]
-            # self.filter[i+1,0] = -ADJ[i]
-            
             A[0,i+1] = ADJ[i]
             A[i+1,0] = ADJ[i]
-            
-            # if i == 0:
-            #     self.filter[0,0] = filter_size-1
-            #     self.filter[-1,-1] = 1
-            # else:
-            #     self.filter[i,i] = 1
+
         self.filter = I - np.matmul(D,np.matmul(A,D))
         s,u = np.linalg.eigh(self.filter)
         self.filter2 = torch.FloatTensor(u).to(self.device)
         self.weight = nn.Parameter(torch.FloatTensor(self.filter_size,1))
         init.xavier_uniform_(self.weight)
+        self.avgweight = nn.Parameter(torch.FloatTensor(self.filter_size,1))
+        init.xavier_uniform_(self.avgweight)
 
-    def forward(self, nodes, batch_neighbors):
+    def forward(self, batch_neighbors):
         """
-        nodes              -- list of nodes in a batch
         batch_neighbors    -- list of sets, each set is the set of neighbors for node in batch
         """
         
@@ -94,62 +84,33 @@ class STC_layer(nn.Module):
         _sample = random.sample
         sampled_neighbors = [_set(_sample(batch_neighbor, num_sample,)) if len(batch_neighbor) >= num_sample else batch_neighbor for batch_neighbor in batch_neighbors]        
         
-        
         unique_nodes_list = list(set.union(*sampled_neighbors))                
-        
         unique_nodes = {n:i for i,n in enumerate(unique_nodes_list)} 
-
-
-
-              
-        mask = torch.zeros(len(sampled_neighbors), len(unique_nodes))
         column_indices = [unique_nodes[n] for sampled_neighbor in sampled_neighbors for n in sampled_neighbor]   
         row_indices = [i for i in range(len(sampled_neighbors)) for j in range(len(sampled_neighbors[i]))]
-        mask[row_indices, column_indices] = 1 
-        
-        
-        mask = mask.to(self.device)
-        
-        num_neighors = mask.sum(1, keepdim=True)
-        mask = mask.div(num_neighors)
-        
-
         embedding_matrix = self.features(torch.LongTensor(unique_nodes_list).to(self.device))
-        embedding_matrix1 = torch.FloatTensor(len(unique_nodes_list),self.embedding_dim).to(self.device)                
         
         fdim = embedding_matrix.size(1)
         result = {}
-        for i in set(row_indices):
-            result[i]=row_indices.count(i)
+        result = {int(i):row_indices.count(i) for i in set(row_indices)}
         num_Count = result
-        end_num = 0
-        start_num = 0
         
-        #mask2 = Variable(torch.zeros(self.filter_size, fdim*len(sampled_neighbors))).to(self.device)
-        mask2 = torch.zeros(self.filter_size, fdim*len(sampled_neighbors)).to(self.device)
-        #mask3 = torch.zeros(self.filter_size, fdim*len(sampled_neighbors)).to(self.device)
+        mask2 = torch.zeros(len(sampled_neighbors)*self.filter_size,fdim).to(self.device)
         
-        index_c1 = []
-        index_r = []
-        for i in range(len(sampled_neighbors)):
-            start_num = end_num
-            end_num = end_num + num_Count[i]
-            index_c = i*fdim
-            mask2[1:num_Count[i]+1,index_c:index_c+fdim] = embedding_matrix[column_indices[start_num:end_num],:]        
-        #print(mask2)
+        index_c1 = []        
+        index_c1 = [i*self.filter_size+j+1 for i in range(len(sampled_neighbors)) for j in range(num_Count[i])]  
+        mask2[index_c1] = embedding_matrix[column_indices,:]   
+        
         U = self.filter2
         UT = torch.transpose(U, 0, 1)
-        weight2 = torch.mm(UT,mask2)
-        mask3 = torch.mul(self.weight,weight2)        
-        temp_feat = torch.mm(U, mask3)
-        end_num = 0
-        start_num = 0
-        for i in range(len(sampled_neighbors)):
-            start_num = end_num
-            end_num = end_num + num_Count[i]
-            index_c = i*fdim
-            embedding_matrix1[column_indices[start_num:end_num],:] = temp_feat[1:num_Count[i]+1,index_c:index_c+fdim]
+        mask2 = mask2.view(len(sampled_neighbors), self.filter_size,fdim)
+        mask2 = torch.transpose(mask2, 1, 2)
+        weight2 = torch.matmul(mask2,U)
+        mask3 = torch.mul(weight2, self.weight.view(1,1,-1))
+        temp_feat = torch.matmul(mask3,UT)
+        temp_feat = torch.matmul(temp_feat,self.avgweight)
+        temp_feat = torch.transpose(temp_feat, 1, 2)
+        temp_feat = temp_feat.contiguous().view(-1,fdim)
+        batch_features = temp_feat
 
-        batch_features = mask.mm(embedding_matrix1)
-        batch_features = self.batch_norm(batch_features)
         return batch_features

@@ -23,7 +23,7 @@ import torch.nn as nn
 # =============================================================================
 # =============================================================================
 # Please cite our paper if you use this code in your own work:
-# Wu, Chong; Feng, Zhenan; Zheng, Jiangbin; Zhang, Houwang; Cao, Jiawang; Yan, Hong (2020): Star Topology Convolution for Graph Representation Learning. TechRxiv. Preprint. https://doi.org/10.36227/techrxiv.12805799.v3
+# Wu, Chong; Feng, Zhenan; Zheng, Jiangbin; Zhang, Houwang; Cao, Jiawang; YAN, Hong (2020): Star Topology Convolution for Graph Representation Learning. TechRxiv. Preprint. https://doi.org/10.36227/techrxiv.12805799.v4 
 # =============================================================================
 # =============================================================================
 
@@ -36,13 +36,34 @@ class STC_decoder(nn.Module):
         self.STC_encoder = STC_encoder
         self.device = device
         self.xent_loss = nn.CrossEntropyLoss()
-        self.weight = nn.Parameter(torch.FloatTensor(num_classes, STC_encoder.embedding_dim))
+        self.weight = nn.Parameter(torch.FloatTensor(STC_encoder.embedding_dim, num_classes))
         init.xavier_uniform_(self.weight)
 
     def forward(self, nodes):        
         embeddings = self.STC_encoder(nodes)
-        output = self.weight.mm(embeddings)    
-        return output.t()
+        output = embeddings.mm(self.weight)     
+        return output
+
+    def loss(self, nodes, labels):        
+        output = self.forward(nodes)        
+        return self.xent_loss(output, labels.squeeze().to(self.device))
+
+class STC_decoderM(nn.Module):
+    """
+    The decoder for multi-label classification
+    """
+    def __init__(self, num_classes, STC_encoder, device):
+        super(STC_decoderM, self).__init__()
+        self.STC_encoder = STC_encoder
+        self.device = device
+        self.xent_loss = nn.BCEWithLogitsLoss()
+        self.weight = nn.Parameter(torch.FloatTensor(STC_encoder.embedding_dim, num_classes))
+        init.xavier_uniform_(self.weight)
+
+    def forward(self, nodes):        
+        embeddings = self.STC_encoder(nodes)
+        output = embeddings.mm(self.weight)   
+        return output
 
     def loss(self, nodes, labels):        
         output = self.forward(nodes)        

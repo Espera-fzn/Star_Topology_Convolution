@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn import init
 import torch.nn.functional as F
-import random
+
 
 # =============================================================================
 # =============================================================================
@@ -32,7 +32,7 @@ import random
 
 class STC_encoder(nn.Module):
     """
-    Encodes a node's using Star Topology Convolution (STC)
+    Encodes a node's using Star Topology Convolution (STC) with convolution only
     """
     def __init__(self, features, feature_dim, embedding_dim, adjacent_list, STC_layer, device, dropout_param, dropout_a, filtersize=10, base_model = None): 
         super(STC_encoder, self).__init__()
@@ -52,21 +52,17 @@ class STC_encoder(nn.Module):
         self.embedding_dim = embedding_dim
         self.adjacent_list = adjacent_list
         self.STC_layer = STC_layer
-        self.device = device  
+        self.device = device
+        self.num_sample = filtersize    
         self.dropout = dropout_a
         if self.dropout == True:
             self.dropout_param = dropout_param
         if base_model != None:
             self.base_model = base_model
-        self.filter_size = filtersize
-        self.detaching_weight = nn.Parameter(torch.FloatTensor(self.feature_dim*2 + self.embedding_dim, self.embedding_dim))
-        init.xavier_uniform_(self.detaching_weight)
-        self.W = nn.Parameter(torch.FloatTensor(size=(self.feature_dim, self.embedding_dim)))  
-        nn.init.xavier_uniform_(self.W)
-        self.alpha = 0.2
-        self.a = nn.Parameter(torch.FloatTensor(size=(1,2*self.embedding_dim)))
-        nn.init.xavier_uniform_(self.a)
-        self.leakyrelu = nn.LeakyReLU(self.alpha)       
+        self.detaching_weight = nn.Parameter(torch.FloatTensor(2 * self.feature_dim, self.embedding_dim))
+        init.xavier_uniform_(self.detaching_weight)          
+            
+
 
     def forward(self, nodes):
         """
@@ -74,47 +70,13 @@ class STC_encoder(nn.Module):
 
         nodes     -- list of nodes
         """
-        num_sample = self.filter_size
-        neigh_nodes = [self.adjacent_list[int(node)] for node in nodes]
-        neigh_feats = self.STC_layer.forward(neigh_nodes)   
+        neigh_feats = self.STC_layer.forward([self.adjacent_list[int(node)] for node in nodes])   
         nodes2 = [int(node) for node in nodes]
-        _set = set
-
-        _sample = random.sample
-        sampled_neighbors = [_set(_sample(batch_neighbor, num_sample,)) if len(batch_neighbor) >= num_sample else batch_neighbor for batch_neighbor in neigh_nodes]        
-        
-        unique_nodes_list = list(set.union(*sampled_neighbors))  
-        unique_nodes = {n:i for i,n in enumerate(unique_nodes_list)} 
-        unique_nodes2 = {n:i for i,n in enumerate(nodes2)} 
-        embedding_matrix = self.features(torch.LongTensor(unique_nodes_list).to(self.device))
-        embedding_matrix2 = self.features(torch.LongTensor(nodes2).to(self.device))
-        column_indices = [unique_nodes[n] for sampled_neighbor in sampled_neighbors for n in sampled_neighbor]   
-
-        edge1 = [[unique_nodes2[nodes2[i]] for i,sampled_neighbor in enumerate(sampled_neighbors) for n in sampled_neighbor]]
-        edge2 = column_indices
-        edge1.append(edge2)
-        edge = torch.LongTensor(edge1).to(self.device)
-        edge[1,:] = edge[1,:] + len(unique_nodes2)
-        input1 = torch.cat((embedding_matrix2,embedding_matrix),dim=0)
-        
-        h = torch.mm(input1, self.W)
-        N = h.size()[0]
-        edge_h = torch.cat((h[edge[0, :], :], h[edge[1, :], :]), dim=1).t()
-        edge_e = torch.exp(-self.leakyrelu(self.a.mm(edge_h).squeeze()))
-        a = torch.sparse_coo_tensor(edge, edge_e, torch.Size([len(nodes2), N])).to(self.device)
-        e_rowsum = torch.sparse.mm(a,torch.ones(size=(N,1), device=self.device))
-        if self.dropout == True:
-            edge_e = F.dropout(edge_e, self.dropout_param, training=self.training)
-        h_prime = torch.nan_to_num(torch.sparse.mm(a,h))
-        assert not torch.isnan(h_prime).any()
-        h_prime = torch.nan_to_num(h_prime.div(e_rowsum))
-        assert not torch.isnan(h_prime).any()
-        temp_feat = h_prime
-        combined_feats = torch.cat([embedding_matrix2, temp_feat, neigh_feats], dim=1)        
+        self_feats = self.features(torch.LongTensor(nodes2).to(self.device))
+        combined_feats = torch.cat([self_feats, neigh_feats], dim=1)        
         combined_feats = F.relu(combined_feats.mm(self.detaching_weight))
         if self.dropout == True:
             combined_feats = F.dropout(combined_feats, self.dropout_param, training=self.training)
-
         return combined_feats        
         
 
