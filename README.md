@@ -1,4 +1,4 @@
-# Star_Topology_Convolution
+# Star Topology Convolution (STC)
 This is a Pytorch implementation of Star Topology Convolution.
 
 Copyright (c) 2020, Chong WU & Zhenan FENG All rights reserved.
