@@ -16,7 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 # Citation of our paper:
 
-Wu, Chong; Feng, Zhenan; Zheng, Jiangbin; Zhang, Houwang; Cao, Jiawang; Yan, Hong (2020): Star Topology Convolution for Graph Representation Learning. TechRxiv. Preprint. https://doi.org/10.36227/techrxiv.12805799.v4 
+Wu, Chong; Feng, Zhenan; Zheng, Jiangbin; Zhang, Houwang; Cao, Jiawang; Yan, Hong (2020): Star Topology Convolution for Graph Representation Learning. TechRxiv. Preprint. https://doi.org/10.36227/techrxiv.12805799.v5 
 
 @article{STC,
 
@@ -30,7 +30,7 @@ month = "8",
 
 url = "https://www.techrxiv.org/articles/preprint/Star_Topology_Convolution_for_Graph_Representation_Learning/12805799",
 
-doi = "10.36227/techrxiv.12805799.v4"
+doi = "10.36227/techrxiv.12805799.v5"
 
 }
 
@@ -38,7 +38,7 @@ doi = "10.36227/techrxiv.12805799.v4"
 
 This Repository including the Pytorch implementation of Star Topology Convolution and six datasets: Ogbn-MAG, Ogbn-Arxiv, Citeseer, Cora, Pubmed, and Essential-Protein used in our paper: Star Topology Convolution for Graph Representation Learning.
 
-Run Demo_test.py can reproduce the results of Ogbn-MAG.
+Run EP.py can reproduce the results of Essential-Protein.
 
 # Dependencies
 
