@@ -19,14 +19,14 @@
 # =============================================================================
 # =============================================================================
 # Please cite our paper if you use this code in your own work:
-# Wu, Chong; Feng, Zhenan; Zheng, Jiangbin; Zhang, Houwang; Cao, Jiawang; YAN, Hong (2020): Star Topology Convolution for Graph Representation Learning. TechRxiv. Preprint. https://doi.org/10.36227/techrxiv.12805799.v4 
+# Wu, Chong; Feng, Zhenan; Zheng, Jiangbin; Zhang, Houwang; Cao, Jiawang; Yan, Hong (2020): Star Topology Convolution for Graph Representation Learning. TechRxiv. Preprint. https://doi.org/10.36227/techrxiv.12805799.v5 
 # =============================================================================
 # =============================================================================
 
 ___________________________________________
 STC (Pytorch implementation):
 
-Run Demo_test.py can reproduce the results of Ogbn-MAG (homogeneous version, only use the information of {'paper', 'cites', 'paper'} without using any preprocessing steps).
+Run EP.py can reproduce the results of Essential-Protein.
 
 Dependencies
 python >= 3.7.0
