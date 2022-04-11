@@ -38,7 +38,7 @@ doi = "10.36227/techrxiv.12805799.v5"
 
 This Repository including the Pytorch implementation of Star Topology Convolution and ten datasets: ACM, DBLP, IMDB, Ogbn-MAG, Ogbn-Arxiv, Citeseer, Cora, Pubmed, PPI, and Essential-Protein used in our paper: Star Topology Convolution for Graph Representation Learning.
 
-Run EP.py can reproduce the results of Essential-Protein.
+EP.py provides an implementation demo on the dataset of Essential-Protein.
 
 # Dependencies
 
