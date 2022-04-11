@@ -26,7 +26,7 @@
 ___________________________________________
 STC (Pytorch implementation):
 
-Run EP.py can reproduce the results of Essential-Protein.
+EP.py provides an implementation demo on the dataset of Essential-Protein.
 
 Dependencies
 python >= 3.7.0
