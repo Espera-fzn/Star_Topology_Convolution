@@ -46,11 +46,7 @@ python >= 3.7.0
 
 pytorch >= 1.8.1
 
-# STC format of OGB datasets
+# OGB datasets
 
-The STC format of Ogbn-MAG and Ogbn-Arxiv can be downloaded on 
-
-Url：https://pan.baidu.com/s/1oOUp067hOmPvwD7KZ_-Lww
-
-PIN：e95g
+Ogbn-MAG and Ogbn-Arxiv are available on the OGB website.
 
