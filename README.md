@@ -30,7 +30,7 @@ month = "8",
 
 url = "https://www.techrxiv.org/articles/preprint/Star_Topology_Convolution_for_Graph_Representation_Learning/12805799",
 
-doi = "10.36227/techrxiv.12805799.v5"
+doi = "10.36227/techrxiv.12805799.v6"
 
 }
 
