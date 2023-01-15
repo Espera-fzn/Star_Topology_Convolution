@@ -46,7 +46,7 @@ python >= 3.7.0
 
 pytorch >= 1.8.1
 
-# OGB datasets
+# The OGB datasets
 
 Ogbn-MAG and Ogbn-Arxiv are available on the OGB website.
 
