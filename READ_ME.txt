@@ -26,11 +26,11 @@
 ___________________________________________
 STC (Pytorch implementation):
 
-EP.py provides an implementation demo on the dataset of Essential-Protein.
+EP.py provides an implementation demo for Essential-Protein.
 
 Dependencies
-python >= 3.7.0
-pytorch >= 1.8.1
+python >= 3.7.6
+pytorch >= 1.9.0
 
 
 
