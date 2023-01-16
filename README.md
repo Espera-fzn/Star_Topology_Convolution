@@ -42,9 +42,9 @@ EP.py provides an implementation demo for Essential-Protein.
 
 # Dependencies
 
-python >= 3.7.0
+python >= 3.7.6
 
-pytorch >= 1.8.1
+pytorch >= 1.9.0
 
 # The OGB datasets
 
